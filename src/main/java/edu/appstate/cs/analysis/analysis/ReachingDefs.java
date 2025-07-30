@@ -119,7 +119,14 @@ public class ReachingDefs {
                 }
                 reachIn.put(nLabel, defsFromPredecessors);
 
-                // TODO: Compute reach out!
+                Set<Def> reachOutForNode = new HashSet<>();
+                reachOutForNode.addAll(gen.get(nLabel));
+                
+                // Add reach in definitions that are not killed by this node
+                Set<Def> reachInMinusKill = new HashSet<>(reachIn.get(nLabel));
+                reachInMinusKill.removeAll(kills.get(nLabel));
+                reachOutForNode.addAll(reachInMinusKill);
+                reachOut.put(nLabel, reachOutForNode);
             }
 
         } while (!reachIn.equals(oldReachIn) || !reachOut.equals(oldReachOut));
